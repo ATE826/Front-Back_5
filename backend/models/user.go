@@ -10,11 +10,16 @@ import (
 
 type User struct {
 	gorm.Model
-	Role      string `json:"role" gorm:"default:user"`
-	FirstName string `json:"first_name" gorm:"not null"`
-	LastName  string `json:"last_name" gorm:"not null"`
-	Email     string `json:"email" gorm:"unique;not null"`
-	Password  string `json:"password" gorm:"not null"`
+	Role       string   `gorm:"size:20;default:user" json:"role"` // может быть "user" или "admin"
+	FirstName  string   `gorm:"size:255;not null;" json:"first_name"`
+	LastName   string   `gorm:"size:255;not null;" json:"last_name"`
+	Patronymic string   `gorm:"size:255;not null;" json:"patronymic"`
+	Email      string   `gorm:"size:255;not null;unique" json:"email"`
+	Password   string   `gorm:"size:255;not null;" json:"password"`
+	City       string   `gorm:"size:255;not null;" json:"city"`
+	Birthday   string   `gorm:"size:255;not null;" json:"birthday"`
+	Courses    []Course `gorm:"foreignKey:UserId" json:"courses"` // Связь с курсами
+	IsBlocked  bool     `gorm:"default:false" json:"is_blocked"`
 }
 
 func (u *User) HashPassword() error {
@@ -26,8 +31,12 @@ func (u *User) HashPassword() error {
 
 	u.FirstName = html.EscapeString(strings.TrimSpace(u.FirstName))
 	u.LastName = html.EscapeString(strings.TrimSpace(u.LastName))
+	u.Patronymic = html.EscapeString(strings.TrimSpace(u.Patronymic))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.Password = string(hashedPassword)
+	u.City = html.EscapeString(strings.TrimSpace(u.City))
+	u.Birthday = html.EscapeString(strings.TrimSpace(u.Birthday))
+
 	return nil
 }
 

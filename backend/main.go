@@ -2,6 +2,7 @@ package main
 
 import (
 	"front-back_5/handlers"
+	"front-back_5/middleware"
 	"front-back_5/models"
 	"log"
 	"os"
@@ -40,6 +41,10 @@ func SetupRouter() *gin.Engine {
 	router := r.Group("/api")                 // Создание группы маршрутов
 	router.POST("/register", server.Register) // Регистрация пользователя
 	router.POST("/login", server.Login)       // Авторизация пользователя
+
+	user := r.Group("/user")
+	user.Use(middleware.JWTMiddleware())
+	user.GET("/", server.GetCurrentUser)
 
 	return r
 }

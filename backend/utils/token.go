@@ -1,16 +1,16 @@
 package utils
 
 import (
+	"EduPro/models"
 	"errors"
 	"fmt"
-	"front-back_5/models"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 )
 
 func GenerateToken(user models.User) (string, error) {
