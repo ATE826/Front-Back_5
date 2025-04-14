@@ -44,6 +44,7 @@ func SetupRouter() *gin.Engine {
 
 	user := r.Group("/user")
 	user.Use(middleware.JWTMiddleware())
+
 	user.GET("/", server.GetCurrentUser)
 
 	return r

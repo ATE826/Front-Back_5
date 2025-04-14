@@ -8,32 +8,25 @@ import (
 )
 
 func (s *Server) GetCurrentUser(c *gin.Context) {
-	userId, exists := c.Get("user_id")
+	userIDInterface, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not found in context"})
+		return
+	}
+
+	userID, ok := userIDInterface.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid user ID type"})
 		return
 	}
 
 	var user models.User
-
-	// Подгружаем курсы и тесты в курсах
-	if err := s.db.Preload("Courses.Test").First(&user, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	if err := s.db.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
-	// Не возвращаем пароль
-	user.Password = ""
+	user.Password = "" // Не возвращаем пароль
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
-}
-
-type UserUpdateInput struct {
-	FirstName  string `json:"first_name"`
-	LastName   string `json:"last_name"`
-	Patronymic string `json:"patronymic"`
-	City       string `json:"city"`
-	Birthday   string `json:"birthday"`
-	Email      string `json:"email"`
-	Password   string `json:"password"` // Если новый пароль передается
 }
