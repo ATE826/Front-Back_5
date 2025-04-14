@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"EduPro/models"
-	"EduPro/utils"
+	"front-back_5/models"
+	"front-back_5/utils"
 	"net/http"
 	"os"
 
@@ -12,13 +12,10 @@ import (
 )
 
 type RegisterInput struct { // Структура для валидации данных при регистрации
-	FirstName  string `json:"first_name" binding:"required"`
-	LastName   string `json:"last_name" binding:"required"`
-	Patronymic string `json:"patronymic" binding:"required"`
-	Email      string `json:"email" binding:"required"`
-	Password   string `json:"password" binding:"required"`
-	City       string `json:"city" binding:"required"`
-	Birthday   string `json:"birthday" binding:"required"`
+	FirstName string `json:"first_name" binding:"required"`
+	LastName  string `json:"last_name" binding:"required"`
+	Email     string `json:"email" binding:"required"`
+	Password  string `json:"password" binding:"required"`
 }
 
 type LoginInput struct { // Структура для валидации данных при входе
@@ -52,14 +49,11 @@ func (s *Server) Register(c *gin.Context) { // Функция для регис�
 	}
 
 	user := models.User{ // Создание экземпляра пользователя
-		FirstName:  input.FirstName,
-		LastName:   input.LastName,
-		Patronymic: input.Patronymic,
-		Email:      input.Email,
-		Password:   input.Password,
-		City:       input.City,
-		Birthday:   input.Birthday,
-		Role:       role,
+		FirstName: input.FirstName,
+		LastName:  input.LastName,
+		Email:     input.Email,
+		Password:  input.Password,
+		Role:      role,
 	}
 
 	user.HashPassword() // Хеширование пароля
@@ -108,12 +102,6 @@ func (s *Server) Login(c *gin.Context) {
 	var user models.User
 	if err := s.db.Where("email = ?", input.Email).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid email or password"})
-		return
-	}
-
-	// Проверка на блокировку
-	if user.IsBlocked {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "user is blocked"})
 		return
 	}
 

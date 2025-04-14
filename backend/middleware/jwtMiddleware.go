@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"EduPro/utils"
+	"front-back_5/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
