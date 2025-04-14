@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import '../App.css'
 
 const Profile = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('token')  // Получаем токен из localStorage
+    const token = localStorage.getItem('token')
     if (!token) {
       console.log('Токен не найден')
       return
     }
 
     axios.get('http://localhost:8080/user/', {
-      headers: { Authorization: `Bearer ${token}` }  // ОБЯЗАТЕЛЬНО в бэктиках
+      headers: { Authorization: `Bearer ${token}` }
     })
     .then(res => {
       setUser(res.data.user)
@@ -22,22 +23,21 @@ const Profile = () => {
     })
   }, [])
 
+  if (!user) return <p className="loading">Загрузка...</p>
+
   const handleRedirect = () => {
-    window.location.href = 'https://www.youtube.com'
+    window.open('https://www.youtube.com', '_blank')
   }
 
-  if (!user) return <p>Загрузка...</p>
-
   return (
-    <div>
-      <h2>Профиль</h2>
-      <p>Имя: {user.first_name}</p>
-      <p>Фамилия: {user.last_name}</p>
-      <p>Email: {user.email}</p>
-
-      <button onClick={handleRedirect} style={{ marginTop: '20px' }}>
-        Перейти на YouTube
-      </button>
+    <div className="container">
+      <h2>Профиль пользователя</h2>
+      <div className="profile-card">
+        <p><strong>Имя:</strong> {user.first_name}</p>
+        <p><strong>Фамилия:</strong> {user.last_name}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <button onClick={handleRedirect}>Перейти на YouTube</button>
+      </div>
     </div>
   )
 }
