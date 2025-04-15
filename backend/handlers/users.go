@@ -30,3 +30,7 @@ func (s *Server) GetCurrentUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
+
+func (s *Server) LogOut(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "Успешный выход из системы"})
+}
